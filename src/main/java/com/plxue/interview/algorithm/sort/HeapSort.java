@@ -8,8 +8,10 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * // @author matrix // 堆排序 // 主要思路:
+/*
+ // @author matrix 
+ // 堆排序 
+ // 主要思路:
  */
 public class HeapSort {
 	private static Logger LOG = LoggerFactory.getLogger(HeapSort.class);

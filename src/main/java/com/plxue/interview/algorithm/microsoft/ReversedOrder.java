@@ -3,6 +3,8 @@
  */
 package com.plxue.interview.algorithm.microsoft;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +18,10 @@ import org.slf4j.LoggerFactory;
  */
 public class ReversedOrder {
 	private static Logger LOG = LoggerFactory.getLogger(ReversedOrder.class);
-	
+
 	/**
 	 * 该算法时间复杂度n^2
+	 * 
 	 * @param data
 	 * @return
 	 */
@@ -32,48 +35,49 @@ public class ReversedOrder {
 		}
 		return sum;
 	}
-	
+
 	public static int second(int[] data) {
 		return sort(data, 0, data.length - 1, new int[data.length]);
 	}
-	
+
 	public static int sort(int[] data, int start, int end, int[] tmp) {
 		int sum = 0;
 		if (start < end) {
 			int mid = start + ((end - start) >> 1);
 			sum += sort(data, start, mid, tmp);
 			sum += sort(data, mid + 1, end, tmp);
-			return merge(data, start, mid, end, tmp);
+			sum += merge(data, start, mid, end, tmp);
 		}
 		return sum;
 	}
-	
+
 	public static int merge(int[] data, int start, int mid, int end, int[] tmp) {
-		int index = 0;
+		int sum = 0;
 		int i = start;
 		int j = mid + 1;
-		int sum = 0;
+		int index = 0;
 		while (true) {
-			if (data[i] > data[j]) {
-				sum++;
-				tmp[index++] = data[j++];
-			}
-			else {
+			if (data[i] <= data[j])
 				tmp[index++] = data[i++];
+			else {
+				tmp[index++] = data[j++];
+				sum += mid - i + 1;
 			}
+			
 			if (i > mid) {
 				for (; j <= end;)
-					data[index++] = data[j++];
+					tmp[index++] = data[j++];
 				break;
 			}
 			if (j > end) {
-				for (; i <= mid;)
-					data[index++] = data[i++];
+				for (; i <= mid;)	
+					tmp[index++] = data[i++];
 				break;
 			}
 		}
-		for (i = 0; i < index; ++i)
-			data[start + i] = tmp[i];
+		while(--index >= 0) {
+			data[start + index] = tmp[index];
+		}
 		return sum;
 	}
 
@@ -81,9 +85,10 @@ public class ReversedOrder {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int[] data = new int[] {2, 4, 3, 1};
+		int[] data = new int[] { 2, 4, 3, 1 };
 		LOG.debug(String.format("result:%d", first(data)));
 		LOG.debug(String.format("result:%d", second(data)));
+		LOG.debug(String.format("data:%s", Arrays.toString(data)));
 	}
 
 }
