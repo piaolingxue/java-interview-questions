@@ -17,6 +17,12 @@ import org.slf4j.LoggerFactory;
 public class QuickSort {
 	private static Logger LOG = LoggerFactory.getLogger(QuickSort.class);
 
+	/**
+	 * quick sort 算法复杂度nlog(n)
+	 * @param data
+	 * @param start
+	 * @param end
+	 */
 	public static void quickSort(int[] data, int start, int end) {
 		if (start < end) {
 			int i = start;
