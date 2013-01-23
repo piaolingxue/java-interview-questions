@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author matrix
- * 
+ // @author matrix
+ // 校验括号匹配是否合法 
  */
 public class BracketMatch {
 	private static Logger LOG = LoggerFactory.getLogger(BracketMatch.class);
