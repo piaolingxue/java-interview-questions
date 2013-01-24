@@ -105,18 +105,96 @@ public class ExpressionEvaluation {
 		return operands.pop();
 	}
 
+	public static double postfixExpressionEvaluation(String expression) {
+		expression = expression.replaceAll("\\s+", "");
+		expression = expression.replaceAll("[{|\\[]", "(");
+		expression = expression.replaceAll("[}|\\]]", ")");
+		expression += '#';
+		
+		String postfix = transform(expression);
+		Stack<Double> nums_stack = new Stack<Double>();
+		for (int i = 0; i < postfix.length(); ++i) {
+			if (ops.contains(postfix.charAt(i))) {
+				double r = nums_stack.pop();
+				double l = nums_stack.pop();
+				nums_stack.push(operate(l, r, postfix.charAt(i)));
+			}
+			else {
+				int end = i;
+				while (postfix.charAt(++end) != '#');
+				double v = Double.valueOf(postfix.substring(i, end));
+				nums_stack.push(v);
+				i = end;
+			}
+		}
+
+		return nums_stack.pop();
+	}
+
+	private static int op(char ch) {
+		switch (ch) {
+		case '+':
+		case '-':
+			return 1;
+		case '*':
+		case '/':
+			return 2;
+		default:
+			// '#', '('
+			return 0;
+		}
+
+	}
+
+	static String transform(String expression) {
+		Stack<Character> op_stack = new Stack<Character>();
+		op_stack.push('#');
+		StringBuffer postfix = new StringBuffer();
+		for (int i = 0; i < expression.length(); ++i) {
+			char ch = expression.charAt(i);
+			if (!ops.contains(ch)) {
+				int end = i;
+				while(!ops.contains(expression.charAt(++end)));
+				postfix.append(expression.substring(i, end)).append('#');
+				i = end -1;
+			}
+			else {
+				switch (ch) {
+				case '(':
+					op_stack.push(ch);
+					break;
+				case ')':
+					while(op_stack.peek() != '(') {
+						postfix.append(op_stack.pop());
+					}
+					op_stack.pop();
+					break;
+				default:
+					while(op(ch) < op(op_stack.peek())) {
+						postfix.append(op_stack.pop());
+					}
+					if (ch != '#')
+						op_stack.push(ch);
+				}
+			}
+		}
+		LOG.debug(String.format("postfix expression:%s", postfix.toString()));
+		return postfix.toString();
+	}
+
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		String[] expressions = new String[] { "3*(7-2)", "12*(14-2)+5",
 				"1.1 + 2.5 * 2.2 * (2 - 5)", "{[2+3*2/(1+1)]*3+5}",
-				"3*5+2-4*[1+3*(2-5)]", "[)3*3]", "{(3+2)*5 + 3*2}",
-				"3+3+"};
+				"3*5+2-4*[1+3*(2-5)]", "[)3*3]", "{(3+2)*5 + 3*2}", "3+3+" };
 		for (String exp : expressions) {
 			try {
 				LOG.debug(String.format("exp:%s, result:%.2f", exp,
 						evaluation(exp)));
+				LOG.debug(String.format("exp:%s, result:%.2f", exp,
+						postfixExpressionEvaluation(exp)));
 			} catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
