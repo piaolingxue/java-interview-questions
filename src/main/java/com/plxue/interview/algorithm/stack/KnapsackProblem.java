@@ -47,8 +47,7 @@ public class KnapsackProblem {
             k = stack.pop();            
 			T += data[k];
 			++k;
-		} while (!stack.empty() || k < data.length);
-		
+		} while (!stack.empty() || k < data.length);	
 	}
 	
 	/**
